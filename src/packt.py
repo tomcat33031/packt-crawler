@@ -1,10 +1,10 @@
 import requests
 import re
 import urllib
-from src.utils import make_soup, wait , download_file
-from src.logs import *
-from src.noBookException import NoBookException
-from src.alreadyClaimedException import AlreadyClaimedException
+from utils import make_soup, wait , download_file
+from logs import *
+from noBookException import NoBookException
+from alreadyClaimedException import AlreadyClaimedException
 from os.path import split, join
 
 
@@ -14,8 +14,13 @@ class Packt(object):
     Class interactive with Packtpub website
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, config):
+        self.__config = config
+        self.__delay = float(self.__config.get('delay', 'delay.requests'))
+        self.__url_base = self.__config.get('url', 'url.base')
+        self.__headers = self.__init_headers()
+        self.__session = requests.Session()
+        self.resetInfo()
     
     def resetInfo(self):
         self.info = {
