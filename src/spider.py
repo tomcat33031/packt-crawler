@@ -3,6 +3,8 @@ import os
 from packt import Packt
 from logs import *
 from utils import ip_address, config_file
+from noBookException import NoBookException
+from alreadyClaimedException import AlreadyClaimedException
 
 def main():
     now = datetime.datetime.now()
@@ -13,18 +15,25 @@ def main():
     try:
         dir_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + os.path.sep
         config = config_file(dir_path + "config\prod.cfg")
-        #packt = Packt(config)
+        packt = Packt(config)
+        log_info(packt)
 
         ip_address()
-        log_info('[*] getting daily free eBook')
+        log_info('[*] Getting daily free eBook')
+        try:
+            packt.runDaily()
+        except NoBookException as e:
+            log_info('[*] ' + e.message)
+        except Exception as e:
+            log_debug(e)
 
     except KeyboardInterrupt:
-        log_error('[-] interrupted manually')
+        log_error('[-] Interrupted manually')
             
     except Exception as e:
         log_debug(e)
 
-    log_info('[*] done')
+    log_info('[*] Done')
 
 if __name__ == '__main__':
     print ("""

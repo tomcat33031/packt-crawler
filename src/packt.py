@@ -15,6 +15,7 @@ class Packt(object):
     """
 
     def __init__(self, config):
+        self.__dev = False
         self.__config = config
         self.__delay = float(self.__config.get('delay', 'delay.requests'))
         self.__url_base = self.__config.get('url', 'url.base')
